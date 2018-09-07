@@ -1,3 +1,3 @@
-index:
-   path: /
-   controller: App\Controllers\TeamController
+# index:
+#    path: /
+#    controller: \App\Controllers\TeamsController
