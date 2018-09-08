@@ -1,11 +1,13 @@
 <?php
+
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Entity\Team;
 use Symfony\Component\HttpFoundation\Request;
+
+use App\Entity\Team;
 
 class TeamsController extends AbstractController
 {
@@ -29,12 +31,14 @@ class TeamsController extends AbstractController
      *      methods={"POST"}
      * )
      */
-    public function create(string $name, string $strip) : JsonResponse
+    public function create(Request $request) : JsonResponse
     {
         $manager = $this->getDoctrine()->getManager();
 
         $team = new Team();
-        $team->setName($name)->setStrip($strip);
+        $team
+            ->setName($request->get('name'))
+            ->setStrip($request->get('strip'));
         
         $manager->persist($team);
         $manager->flush();
@@ -51,7 +55,7 @@ class TeamsController extends AbstractController
      *      methods={"PUT"}
      * )
      */
-    public function update(int $id) : JsonResponse
+    public function update(int $id, Request $request) : JsonResponse
     {
         $manager = $this->getDoctrine()->getManager();
 
@@ -60,10 +64,10 @@ class TeamsController extends AbstractController
             ->find($id);
 
         if (!$team) {
-            return $this->createNotFoundException("Team with id {$id} not found.");
+            return new JsonResponse([
+                'message' => 'Team not found.', 'data' => $id
+            ], 404);
         }
-        
-        $request = Request::createFromGlobals();
 
         $team->setName($request->get('name'));
         $team->setName($request->get('strip'));
