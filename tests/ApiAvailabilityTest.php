@@ -18,19 +18,10 @@ class ApiAvailabilityTest extends WebTestCase
     protected function setUp()
     {
         $kernel = self::bootKernel();
-
-        $this->entityManager = $kernel->getContainer()
-            ->get('doctrine')
-            ->getManager();
-        
-        $team = new Team();
-        $team
-            ->setName('hello')
-            ->setStrip('world');
-
-        $this->entityManager->persist($team);
-        $this->entityManager->flush();
-    }
+        $kernel->boot();
+        $this->runConsole("doctrine:schema:drop", array("--force" => true));
+        $this->runConsole("doctrine:schema:create");
+        $this->runConsole("doctrine:fixtures:load", array("--fixtures" => __DIR__ . "/../DataFixtures"));    }
 
     /**
      * {@inheritDoc}
