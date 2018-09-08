@@ -25,7 +25,7 @@ class TeamsController extends AbstractController
      * @Route(
      *     "/teams",
      *      name="team_create",
-     *      defaults={"_format": "json"}
+     *      defaults={"_format": "json"},
      *      methods={"POST"}
      * )
      */
@@ -47,7 +47,7 @@ class TeamsController extends AbstractController
      *      "/teams/{id}",
      *      name="team_update",
      *      defaults={"_format", "json"},
-     *      requirements={"id"="\d+"}
+     *      requirements={"id"="\d+"},
      *      methods={"PUT"}
      * )
      */
