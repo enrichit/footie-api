@@ -19,5 +19,7 @@ class ApiAvailabilityTest extends WebTestCase
     public function urlProvider()
     {
         yield ['GET', '/teams'];
+        yield ['POST', '/teams'];
+        yield ['PUT', '/teams/123'];
     }
 }
