@@ -12,6 +12,8 @@ use Symfony\Component\Console\Input\StringInput;
 trait FixtureWebTestCase
 {
     protected static $application;
+
+    protected static $entityManager;
     
     protected function setUp()
     {
@@ -32,7 +34,7 @@ trait FixtureWebTestCase
     {
         if (null === self::$application) {
             $client = static::createClient();
-
+            self::$entityManager = $client->getContainer()->get('doctrine.orm.entity_manager');
             self::$application = new Application($client->getKernel());
             self::$application->setAutoExit(false);
         }
