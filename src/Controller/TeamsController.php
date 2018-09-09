@@ -7,16 +7,19 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 use App\Entity\Team;
 
 class TeamsController extends AbstractController
 {
     private $serializer = null;
+    private $entityManager = null;
 
-    public function __construct(SerializerInterface $serializer)
+    public function __construct(SerializerInterface $serializer, EntityManagerInterface $entityManager)
     {
         $this->serializer = $serializer;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -44,15 +47,13 @@ class TeamsController extends AbstractController
      */
     public function create(Request $request) : Response
     {
-        $manager = $this->getDoctrine()->getManager();
-
         $team = new Team();
         $team
             ->setName($request->get('name'))
             ->setStrip($request->get('strip'));
         
-        $manager->persist($team);
-        $manager->flush();
+        $this->entityManager->persist($team);
+        $this->entityManager->flush();
         
         $response = new Response($this->serializer->serialize($team, 'json'));
         $response->headers->set('Content-Type', 'application/json');
@@ -71,8 +72,6 @@ class TeamsController extends AbstractController
      */
     public function update(int $id, Request $request) : Response
     {
-        $manager = $this->getDoctrine()->getManager();
-
         $team = $this->getDoctrine()
             ->getRepository(Team::class)
             ->find($id);
@@ -86,7 +85,7 @@ class TeamsController extends AbstractController
         $team->setName($request->get('name'));
         $team->setName($request->get('strip'));
 
-        $manager->flush();
+        $this->entityManager->flush();
         
         $response = new Response($this->serializer->serialize($team, 'json'));
         $response->headers->set('Content-Type', 'application/json');
