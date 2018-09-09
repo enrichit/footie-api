@@ -1,38 +1,13 @@
 <?php
 
-namespace App\Test;
+namespace App\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Entity\Team;
 
 class ApiAvailabilityTest extends WebTestCase
 {
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $entityManager;
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function setUp()
-    {
-        $kernel = self::bootKernel();
-        $kernel->boot();
-        $this->runConsole("doctrine:schema:drop", array("--force" => true));
-        $this->runConsole("doctrine:schema:create");
-        $this->runConsole("doctrine:fixtures:load", array("--fixtures" => __DIR__ . "/../DataFixtures"));    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->entityManager->close();
-        $this->entityManager = null; // avoid memory leaks
-    }
+    use FixtureWebTestCase;
     
     /**
      * @dataProvider urlProvider
@@ -47,7 +22,7 @@ class ApiAvailabilityTest extends WebTestCase
     public function urlProvider()
     {
         yield ['GET', '/teams'];
-        yield ['POST', '/teams', ['name' => 'hello', 'strip' => 'world']];
-        yield ['PUT', '/teams/1', ['name' => 'hello', 'strip' => 'world']];
+        // yield ['POST', '/teams', ['name' => 'hello', 'strip' => 'world']];
+        // yield ['PUT', '/teams/1', ['name' => 'hello', 'strip' => 'world']];
     }
 }
