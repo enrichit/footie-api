@@ -25,4 +25,13 @@ class TeamsContollerTest extends WebTestCase
         $this->assertEquals($decoded[0]->Name, 'Chelsea');
         $this->assertEquals($decoded[0]->Strip, 'Blue');
     }
+
+    public function testCreateNewTeam()
+    {
+        $client = self::createClient();
+        $client->request('POST', '/teams', ['name' => 'hello', 'strip' => 'test']);
+        $decoded = json_decode($client->getResponse()->getContent());
+        $this->assertEquals($decoded->Name, 'hello');
+        $this->assertEquals($decoded->Strip, 'test');
+    }
 }
