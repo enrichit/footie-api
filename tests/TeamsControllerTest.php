@@ -28,11 +28,19 @@ class TeamsContollerTest extends WebTestCase
 
     public function testCreateNewTeam()
     {
-        // TODO: Verify calls to DB are made
         $client = self::createClient();
         $client->request('POST', '/teams', ['name' => 'hello', 'strip' => 'test']);
         $decoded = json_decode($client->getResponse()->getContent());
         $this->assertEquals($decoded->Name, 'hello');
         $this->assertEquals($decoded->Strip, 'test');
+    }
+
+    public function testUpdateTeam()
+    {
+        $client = self::createClient();
+        $client->request('PUT', '/teams/1', ['name' => 'Tottenham Hotspur', 'strip' => 'White']);
+        $decoded = json_decode($client->getResponse()->getContent());
+        $this->assertEquals($decoded->Name, 'Tottenham Hotspur');
+        $this->assertEquals($decoded->Strip, 'White');
     }
 }

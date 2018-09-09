@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -55,7 +56,7 @@ class TeamsController extends AbstractController
         $this->entityManager->persist($team);
         $this->entityManager->flush();
         
-        $response = new Response($this->serializer->serialize($team, 'json'));
+        $response = new Response($this->serializer->serialize($team, 'json'), 201);
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
@@ -83,11 +84,11 @@ class TeamsController extends AbstractController
         }
 
         $team->setName($request->get('name'));
-        $team->setName($request->get('strip'));
+        $team->setStrip($request->get('strip'));
 
         $this->entityManager->flush();
         
-        $response = new Response($this->serializer->serialize($team, 'json'));
+        $response = new Response($this->serializer->serialize($team, 'json'), 204);
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
