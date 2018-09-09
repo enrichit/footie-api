@@ -16,4 +16,13 @@ class TeamsContollerTest extends WebTestCase
         $decoded = json_decode($client->getResponse()->getContent());
         $this->assertCount(1, $decoded);
     }
+
+    public function testListTeamsReturnsFirstFixtureNameAndStrip()
+    {
+        $client = self::createClient();
+        $client->request('GET', '/teams');
+        $decoded = json_decode($client->getResponse()->getContent());
+        $this->assertEquals($decoded[0]->name, 'Chelsea');
+        $this->assertEquals($decoded[0]->strip, 'Blue');
+    }
 }
