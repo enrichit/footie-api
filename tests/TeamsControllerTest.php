@@ -22,7 +22,7 @@ class TeamsContollerTest extends WebTestCase
         $client = self::createClient();
         $client->request('GET', '/teams');
         $decoded = json_decode($client->getResponse()->getContent());
-        $this->assertEquals($decoded[0]->name, 'Chelsea');
-        $this->assertEquals($decoded[0]->strip, 'Blue');
+        $this->assertEquals($decoded[0]->Name, 'Chelsea');
+        $this->assertEquals($decoded[0]->Strip, 'Blue');
     }
 }

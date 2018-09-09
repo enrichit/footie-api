@@ -4,23 +4,34 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\SerializerInterface;
 
 use App\Entity\Team;
 
 class TeamsController extends AbstractController
 {
+    private $serializer = null;
+
+    public function __construct(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
     /**
     * @Route("/teams", name="team_list", defaults={"_format": "json"}, methods={"GET"})
     */
-    public function list() : JsonResponse
+    public function list() : Response
     {
         $teams = $this->getDoctrine()
             ->getRepository(Team::class)
             ->findAll();
+        
+        $response = new Response($this->serializer->serialize($teams, 'json'));
+        $response->headers->set('Content-Type', 'application/json');
 
-        return new JsonResponse($teams);
+        return $response;
     }
 
     /**
@@ -31,7 +42,7 @@ class TeamsController extends AbstractController
      *      methods={"POST"}
      * )
      */
-    public function create(Request $request) : JsonResponse
+    public function create(Request $request) : Response
     {
         $manager = $this->getDoctrine()->getManager();
 
@@ -42,8 +53,11 @@ class TeamsController extends AbstractController
         
         $manager->persist($team);
         $manager->flush();
+        
+        $response = new Response($this->serializer->serialize($team, 'json'));
+        $response->headers->set('Content-Type', 'application/json');
 
-        return new JsonResponse($team);
+        return $response;
     }
 
     /**
@@ -55,7 +69,7 @@ class TeamsController extends AbstractController
      *      methods={"PUT"}
      * )
      */
-    public function update(int $id, Request $request) : JsonResponse
+    public function update(int $id, Request $request) : Response
     {
         $manager = $this->getDoctrine()->getManager();
 
@@ -73,7 +87,10 @@ class TeamsController extends AbstractController
         $team->setName($request->get('strip'));
 
         $manager->flush();
+        
+        $response = new Response($this->serializer->serialize($team, 'json'));
+        $response->headers->set('Content-Type', 'application/json');
 
-        return new JsonResponse($team);
+        return $response;
     }
 }
