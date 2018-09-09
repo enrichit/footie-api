@@ -28,6 +28,7 @@ class TeamsContollerTest extends WebTestCase
 
     public function testCreateNewTeam()
     {
+        // TODO: Verify calls to DB are made
         $client = self::createClient();
         $client->request('POST', '/teams', ['name' => 'hello', 'strip' => 'test']);
         $decoded = json_decode($client->getResponse()->getContent());
