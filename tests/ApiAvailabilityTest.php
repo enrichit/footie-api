@@ -22,7 +22,7 @@ class ApiAvailabilityTest extends WebTestCase
     public function urlProvider()
     {
         yield ['GET', '/teams'];
-        // yield ['POST', '/teams', ['name' => 'hello', 'strip' => 'world']];
-        // yield ['PUT', '/teams/1', ['name' => 'hello', 'strip' => 'world']];
+        yield ['POST', '/teams', ['name' => 'hello', 'strip' => 'world']];
+        yield ['PUT', '/teams/1', ['name' => 'hello', 'strip' => 'world']];
     }
 }

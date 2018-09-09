@@ -13,8 +13,7 @@ class TeamsContollerTest extends WebTestCase
     {
         $client = self::createClient();
         $client->request('GET', '/teams');
-        print ($client->getResponse());
-        $decoded = json_decode($client->getResponse());
-        $this->assertCount(1, count($decoded));
+        $decoded = json_decode($client->getResponse()->getContent());
+        $this->assertCount(1, $decoded);
     }
 }
