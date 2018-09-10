@@ -26,6 +26,11 @@ class Team
      */
     private $Strip;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\League", inversedBy="teams")
+     */
+    private $league;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -58,6 +63,18 @@ class Team
     public function setStrip(string $Strip): self
     {
         $this->Strip = $Strip;
+
+        return $this;
+    }
+
+    public function getLeague(): ?League
+    {
+        return $this->league;
+    }
+
+    public function setLeague(?League $league): self
+    {
+        $this->league = $league;
 
         return $this;
     }

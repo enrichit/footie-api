@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,6 +23,16 @@ class League
      */
     private $Name;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Team", mappedBy="league")
+     */
+    private $teams;
+
+    public function __construct()
+    {
+        $this->teams = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -34,6 +46,37 @@ class League
     public function setName(string $Name): self
     {
         $this->Name = $Name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Team[]
+     */
+    public function getTeams(): Collection
+    {
+        return $this->teams;
+    }
+
+    public function addTeam(Team $team): self
+    {
+        if (!$this->teams->contains($team)) {
+            $this->teams[] = $team;
+            $team->setLeague($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeam(Team $team): self
+    {
+        if ($this->teams->contains($team)) {
+            $this->teams->removeElement($team);
+            // set the owning side to null (unless already changed)
+            if ($team->getLeague() === $this) {
+                $team->setLeague(null);
+            }
+        }
 
         return $this;
     }
