@@ -77,7 +77,7 @@ class TeamsController extends AbstractController
         if (!$team) {
             return new JsonResponse([
                 'message' => 'Team not found.', 'data' => $id
-            ], 404);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         $team->setName($request->get('name'));
