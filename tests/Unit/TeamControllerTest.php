@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\TeamRepository;
 use App\Entity\Team;
+use App\Repository\LeagueRepository;
+use App\Entity\League;
 
 class TeamControllerTest extends TestCase
 {
@@ -58,18 +60,49 @@ class TeamControllerTest extends TestCase
         $request
             ->expects($this->atLeast(2))
             ->method('get')
-            ->will($this->onConsecutiveCalls('test1', 'test2'));
+            ->will($this->onConsecutiveCalls(1, 'test1', 'test2'));
+        
+        $leagueRepository = $this->createMock(LeagueRepository::class);
+        $leagueRepository
+            ->expects($this->once())
+            ->method('find')
+            ->willReturn(new League());
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $entityManager->expects($this->once())->method('persist');
         $entityManager->expects($this->once())->method('flush');
 
-        $response = $this->controller->create($request, $entityManager);
+        $response = $this->controller->create($request, $leagueRepository, $entityManager);
 
         $this->assertEquals(
             ['test1', 'test2'],
             json_decode($response->getContent())
         );
+    }
+
+    public function testTeamCreateWithMissingLeague()
+    {
+        $request = $this->createMock(Request::class);
+        $request
+            ->expects($this->once())
+            ->method('get')
+            ->willReturn(1);
+        
+        $leagueRepository = $this->createMock(LeagueRepository::class);
+        $leagueRepository
+            ->expects($this->once())
+            ->method('find')
+            ->willReturn(null);
+
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+
+        $response = $this->controller->create($request, $leagueRepository, $entityManager);
+        $this->assertEquals(
+            (object)['message' => 'League not found.', 'data' => 1],
+            json_decode($response->getContent())
+        );
+
+        $this->assertEquals($response->getStatusCode(), 404);
     }
 
     public function testTeamUpdateNotFound()
