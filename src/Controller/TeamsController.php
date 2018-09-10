@@ -11,31 +11,27 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 use App\Entity\Team;
+use App\Repository\TeamRepository;
 
 class TeamsController extends AbstractController
 {
     private $serializer = null;
     private $entityManager = null;
 
-    public function __construct(SerializerInterface $serializer, EntityManagerInterface $entityManager)
+    public function __construct(SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
-        $this->entityManager = $entityManager;
     }
 
     /**
     * @Route("/teams", name="team_list", defaults={"_format": "json"}, methods={"GET"})
     */
-    public function list() : Response
+    public function list(TeamRepository $repository) : Response
     {
-        $teams = $this->entityManager
-            ->getRepository(Team::class)
-            ->findAll();
-        
-        $response = new Response($this->serializer->serialize($teams, 'json'));
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        $teams = $repository->findAll();
+        return new Response($this->serializer->serialize($teams, 'json'), Response::HTTP_OK, [
+            'Content-Type' => 'application/json'
+        ]);
     }
 
     /**
@@ -46,20 +42,19 @@ class TeamsController extends AbstractController
      *      methods={"POST"}
      * )
      */
-    public function create(Request $request) : Response
+    public function create(Request $request, EntityManagerInterface $entityManager) : Response
     {
         $team = new Team();
         $team
             ->setName($request->get('name'))
             ->setStrip($request->get('strip'));
         
-        $this->entityManager->persist($team);
-        $this->entityManager->flush();
-        
-        $response = new Response($this->serializer->serialize($team, 'json'), 201);
-        $response->headers->set('Content-Type', 'application/json');
+        $entityManager->persist($team);
+        $entityManager->flush();
 
-        return $response;
+        return new Response($this->serializer->serialize($team, 'json'), Response::HTTP_CREATED, [
+            'Content-Type' => 'application/json'
+        ]);
     }
 
     /**
@@ -71,11 +66,13 @@ class TeamsController extends AbstractController
      *      methods={"PUT"}
      * )
      */
-    public function update(int $id, Request $request) : Response
-    {
-        $team = $this->entityManager
-            ->getRepository(Team::class)
-            ->find($id);
+    public function update(
+        int $id,
+        Request $request,
+        TeamRepository $repository,
+        EntityManagerInterface $entityManager
+    ) : Response {
+        $team = $repository->find($id);
 
         if (!$team) {
             return new JsonResponse([
@@ -86,11 +83,10 @@ class TeamsController extends AbstractController
         $team->setName($request->get('name'));
         $team->setStrip($request->get('strip'));
 
-        $this->entityManager->flush();
+        $entityManager->flush();
         
-        $response = new Response('', 204);
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        return new Response('', Response::HTTP_NO_CONTENT, [
+            'Content-Type' => 'application/json'
+        ]);
     }
 }
