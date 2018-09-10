@@ -88,7 +88,7 @@ class TeamsController extends AbstractController
 
         $this->entityManager->flush();
         
-        $response = new Response($this->serializer->serialize($team, 'json'), 204);
+        $response = new Response('', 204);
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;

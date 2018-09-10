@@ -4,6 +4,7 @@ namespace App\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Entity\Team;
 
 class TeamsContollerTest extends WebTestCase
 {
@@ -40,8 +41,16 @@ class TeamsContollerTest extends WebTestCase
         $client = self::createClient();
         $client->request('PUT', '/teams/1', ['name' => 'Tottenham Hotspur', 'strip' => 'White']);
         $decoded = json_decode($client->getResponse()->getContent());
-        print_r($decoded);
-        $this->assertEquals($decoded->Name, 'Tottenham Hotspur');
-        $this->assertEquals($decoded->Strip, 'White');
+        $this->assertEquals(204, $client->getResponse()->getStatusCode());
+        
+        $this->assertEquals(
+            'Tottenham Hotspur',
+            self::$entityManager->getRepository(Team::class)->find(1)->getName()
+        );
+        
+        $this->assertEquals(
+            'White',
+            self::$entityManager->getRepository(Team::class)->find(1)->getStrip()
+        );
     }
 }
