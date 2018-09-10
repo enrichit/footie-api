@@ -28,7 +28,7 @@ class TeamsController extends AbstractController
     */
     public function list() : Response
     {
-        $teams = $this->getDoctrine()
+        $teams = $this->entityManager
             ->getRepository(Team::class)
             ->findAll();
         
@@ -73,7 +73,7 @@ class TeamsController extends AbstractController
      */
     public function update(int $id, Request $request) : Response
     {
-        $team = $this->getDoctrine()
+        $team = $this->entityManager
             ->getRepository(Team::class)
             ->find($id);
 

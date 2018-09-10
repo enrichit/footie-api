@@ -13,7 +13,13 @@ class LeagueContollerTest extends WebTestCase
     {
         $client = self::createClient();
         $client->request('DELETE', '/leagues/1');
-        print_r(self::$entityManager->getRepository(League::class)->findAll());
         $this->assertEmpty(self::$entityManager->getRepository(League::class)->findAll());
+    }
+
+    public function testNotifiesifObjectDoesntExist()
+    {
+        $client = self::createClient();
+        $client->request('DELETE', '/leagues/2');
+        $this->assertEquals(404, $client->getResponse()->getStatusCode());
     }
 }
