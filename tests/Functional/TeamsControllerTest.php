@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -36,14 +36,14 @@ class TeamsContollerTest extends WebTestCase
         $this->assertEquals($decoded->Strip, 'test');
     }
 
-    public function testCreateNewTeamWithLeague()
-    {
-        // $client = self::createClient();
-        // $client->request('POST', '/teams', ['name' => 'hello', 'strip' => 'test']);
-        // $decoded = json_decode($client->getResponse()->getContent());
-        // $this->assertEquals($decoded->Name, 'hello');
-        // $this->assertEquals($decoded->Strip, 'test');
-    }
+    // public function testCreateNewTeamWithLeague()
+    // {
+    //     // $client = self::createClient();
+    //     // $client->request('POST', '/teams', ['name' => 'hello', 'strip' => 'test']);
+    //     // $decoded = json_decode($client->getResponse()->getContent());
+    //     // $this->assertEquals($decoded->Name, 'hello');
+    //     // $this->assertEquals($decoded->Strip, 'test');
+    // }
 
     public function testUpdateTeam()
     {
