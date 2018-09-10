@@ -8,33 +8,29 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\League;
+use App\Repository\LeagueRepository;
 
 class LeagueController extends AbstractController
 {   
-    private $entityManager = null;
-
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
     /**
      * @Route("/leagues/{id}", name="league_delete", defaults={"_format", "json"}, requirements={"id"="\d+"}, methods={"DELETE"})
      */
-    public function delete(int $id) : Response
-    {
-        $league = $this->entityManager
-            ->getRepository(League::class)
-            ->find($id);
+    public function delete(
+        int $id,
+        LeagueRepository $repository,
+        EntityManagerInterface $entityManager
+    ) : Response {
+        $league = $repository->find($id);
 
         if (!$league) {
             return new JsonResponse([
                 'message' => 'League not found.', 'data' => $id
-            ], 404);
+            ], Response::HTTP_NOT_FOUND);
         }
 
-        $this->entityManager->remove($league);
-        $this->entityManager->flush();
-        return new Response('', 204);
+        $entityManager->remove($league);
+        $entityManager->flush();
+
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 }
